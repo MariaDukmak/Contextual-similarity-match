@@ -6,58 +6,38 @@ from src.helpers import _translate_text
 from src.models import predict_from_model
 
 
-def _max_width_():
-    max_width_str = f"max-width: 1400px;"
-    st.markdown(
-        f"""
-    <style>
-    .reportview-container .main .block-container{{
-        {max_width_str}
-    }}
-    </style>    
-    """,
-        unsafe_allow_html=True,
-    )
-
-
-def write_titel_expernder():
+def write_titel_expander():
     c30, c31, c32 = st.columns([4.5, 1, 3])
 
     with c30:
         # st.image("logo.png", width=400)
         st.title("🔑 Contextual similarity match")
-        # st.header("Demo website")
         st.header("")
     #
     # with st.expander("ℹ️ - About this app", expanded=True):
     #     st.write(
     #         """    """
     #     )
-    st.markdown("")
-    st.markdown("")
 
 
 def get_text():
-    st.markdown("")
     st.markdown("## **📌 Paste Ad and article content**")
     with st.form(key="my_form"):
         ce, c1, ce, c2, c3 = st.columns([0.07, 1, 0.07, 5, 0.07])
         with c1:
-            ModelType = st.radio(
+            model_type = st.radio(
                 "Choose your model",
-                ["SiameseLSTM (Default)", "Semantic Textual Similarity", "Sentiment analysis", "Keyword extracting"],
-                help="At present, you can choose just one model. In the feature wil be more models available! ",
-            )
-            StopWordsCheckbox = st.checkbox(
+                ["SiameseLSTM (Default)", "Semantic Textual Similarity", "Sentiment analysis", "Keyword extracting"])
+
+            stop_words_checkbox = st.checkbox(
                 "Remove stop words",
                 value=True,
-                help="Tick this box to remove stop words from the document",
-            )
+                help="Tick this box to remove stop words from the document")
 
-            Translatetext = st.checkbox(
+            translate_text = st.checkbox(
                 "Translate into English",
-                help=" Translate the text into other language(currently English only)",
-            )
+                help=" Translate the text into other language(currently English only)")
+
             n_results = st.slider(
                 "Num of results",
                 min_value=1,
@@ -65,13 +45,14 @@ def get_text():
                 value=10,
                 help="You can choose the number of keywords/keyphrases to display. Between 1 and 30, default number is 10.",)
 
-            use_MMR = st.checkbox(
+            use_mmr = st.checkbox(
                 "Use MMR",
                 value=True,
-                help="You can use Maximal Margin Relevance (MMR) to diversify the results. It creates keywords/keyphrases based on cosine similarity. Try high/low 'Diversity' settings below for interesting variations.",
-            )
+                help="You can use Maximal Margin Relevance (MMR) to diversify the results. "
+                     "It creates keywords/keyphrases based on cosine similarity. "
+                     "Try high/low 'Diversity' settings below for interesting variations.")
 
-            Diversity = st.slider(
+            diversity = st.slider(
                 "Keyword diversity (MMR only)",
                 value=0.5,
                 min_value=0.0,
@@ -83,41 +64,16 @@ def get_text():
             article = st.text_area(
                 "Paste your article text below (max 5000 words)",
                 height=200,
-            )
-
-            MAX_WORDS = 5000
-            import re
-            res = len(re.findall(r"\w+", article))
-            if res > MAX_WORDS:
-                st.warning(
-                    "⚠️ Your text contains "
-                    + str(res)
-                    + " words."
-                    + " Only the first 5000 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
-                )
-
-                article= article[:MAX_WORDS]
+                max_chars=10000)
 
             ad = st.text_area(
                 "Paste your ad text below (max 5000 words)",
-                height=200,)
+                height=200,
+                max_chars=10000)
 
-            res = len(re.findall(r"\w+", ad))
-            if res > MAX_WORDS:
-                st.warning(
-                    "⚠️ Your text contains "
-                    + str(res)
-                    + " words."
-                    + " Only the first 5000 words will be reviewed. Stay tuned as increased allowance is coming! 😊")
+            submit_button = st.form_submit_button(label="✨ Get me the results!")
 
-                ad = ad[:MAX_WORDS]
-            submit_button = st.form_submit_button(label="✨ Get me the matching results!")
-
-    if use_MMR:
-        mmr = True
-    else:
-        mmr = False
-    if StopWordsCheckbox and Translatetext:
+    if stop_words_checkbox and translate_text:
         stopwords = 'english'
     else:
         stopwords = 'dutch'
@@ -125,7 +81,7 @@ def get_text():
     if not submit_button:
         st.stop()
 
-    return article, ad, stopwords, Translatetext, ModelType, mmr, Diversity, n_results
+    return article, ad, stopwords, translate_text, model_type, use_mmr, diversity, n_results
 
 
 def show_results(result):
@@ -135,53 +91,44 @@ def show_results(result):
         st.markdown(result)
 
     else:
-        df = (
-            DataFrame(result[0], columns=["Keyword/Keyphrase", "Relevancy"]).sort_values(by="Relevancy", ascending=False)
-                .reset_index(drop=True))
+        df = (DataFrame(result[0], columns=["Keyword/Keyphrase", "Relevancy"])
+              .sort_values(by="Relevancy", ascending=False)
+              .reset_index(drop=True))
         df.index += 1
-        # Add styling
         cmGreen = sns.light_palette("green", as_cmap=True)
-        cmRed = sns.light_palette("red", as_cmap=True)
-        df = df.style.background_gradient(cmap=cmGreen, subset=["Relevancy",],)
+        df = df.style.background_gradient(cmap=cmGreen, subset=["Relevancy"])
 
         c1, c2, c3 = st.columns([1, 3, 1])
 
-        format_dictionary = {"Relevancy": "{:.1%}",}
+        format_dictionary = {"Relevancy": "{:.1%}"}
         df = df.format(format_dictionary)
 
         df2 = (DataFrame(result[1], columns=["Keyword/Keyphrase", "Relevancy"])
-               .sort_values(by="Relevancy",ascending=False).reset_index(drop=True))
-        df2.index += 1
-        # Add styling
-        cmGreen2 = sns.light_palette("green", as_cmap=True)
-        cmRed = sns.light_palette("red", as_cmap=True)
-        df2 = df2.style.background_gradient(cmap=cmGreen2, subset=["Relevancy", ], )
+               .sort_values(by="Relevancy", ascending=False)
+               .reset_index(drop=True))
 
-        format_dictionary = {"Relevancy": "{:.1%}", }
+        df2.index += 1
+        df2 = df2.style.background_gradient(cmap=cmGreen, subset=["Relevancy"], )
+
         df2 = df2.format(format_dictionary)
         with c2:
             st.markdown('Results of the article')
             st.table(df)
             st.markdown('Results of the ad')
             st.table(df2)
-    # if result > 0.1:
-    #     st.markdown(f"  ##### These two pieces of text do not match, the difference score = {result}")
-    # else:
-    #     st.markdown(f"  ##### These two pieces of text match, the difference score = {result}")
 
 
 def main():
     st.set_page_config(
         page_title="Contextual labs",
         page_icon="🎈",
-        layout="wide",
-    )
-    _max_width_()
-    write_titel_expernder()
-    article, ad, stopwords, Translatetext, modeltype, mmr, Diversity, n_results = get_text()
-    if Translatetext:
+        layout="wide",)
+
+    write_titel_expander()
+    article, ad, stopwords, translatetext, modeltype, mmr, diversity, n_results = get_text()
+    if translatetext:
         article, ad = _translate_text(article), _translate_text(ad)
-    result = predict_from_model([article, ad], modeltype, mmr, Diversity, n_results, stopwords)
+    result = predict_from_model([article, ad], modeltype, mmr, diversity, n_results, stopwords)
     show_results(result)
 
 

@@ -46,7 +46,7 @@ def semantic_textual_similarity(text, stop_words, modelname="sentence-transforme
 
 def siamese_LSTM(text, stop_words, modelpath='static/siamese_smaller_lstm_sequence_25-04-2022_epoch6.pt'):
     article, ad = zip(text)
-    article, ad = _word2vec(text=article, lang=stop_words), _word2vec(text=ad, lang=stop_words)
+    article, ad = _word2vec(text=article, stop_words=stop_words), _word2vec(text=ad, stop_words=stop_words)
 
     saved_model = SiameseLSTM(embedding_dim=5000)
     saved_model.load_state_dict(torch.load(modelpath))
