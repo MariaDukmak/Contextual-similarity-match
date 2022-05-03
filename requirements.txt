@@ -1,0 +1,11 @@
+numpy,
+pandas,
+transformers,
+seaborn,
+nltk,
+sentence_transformers,
+gensim,
+itranslate,
+torch,
+keybert,
+streamlit
