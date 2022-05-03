@@ -7,7 +7,7 @@ from src.models import predict_from_model
 
 
 def _max_width_():
-    max_width_str = f"max-width: 1600px;"
+    max_width_str = f"max-width: 1400px;"
     st.markdown(
         f"""
     <style>
@@ -174,6 +174,7 @@ def main():
     st.set_page_config(
         page_title="Contextual labs",
         page_icon="🎈",
+        layout="wide",
     )
     _max_width_()
     write_titel_expernder()
