@@ -1,4 +1,4 @@
-# Contextual-similarity-match
+# Contextual similarity match
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/mariadukmak/contextual-similarity-match/main/main.py)
 
@@ -15,7 +15,6 @@ cd Contextual-similarity-match
 pip install . //or 
 pip install -r requirements.txt
 streamlit run main.py
-
 ```
 
 ## Explanation used models 

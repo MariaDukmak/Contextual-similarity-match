@@ -13,10 +13,9 @@ def write_titel_expander():
         # st.image("logo.png", width=400)
         st.title("🔑 Contextual similarity match")
         st.header("")
-    #
-    # with st.expander("ℹ️ - About this app", expanded=True):
-    #     st.write(
-    #         """    """
+
+    # with st.expander("ℹ️- About this website", expanded=True):
+    #     st.write(""" - The """
     #     )
 
 

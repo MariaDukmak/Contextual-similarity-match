@@ -2,6 +2,8 @@ import torch
 import numpy as np
 
 from nltk.corpus import stopwords
+import nltk
+nltk.download('stopwords')
 from keybert import KeyBERT
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer, util
