@@ -58,7 +58,7 @@ def extract_keywords_video(video_url):
 
     operation = video_client.annotate_video(request={
         "features": features,
-        "input_uri": f"gs://video-section-bucket/test_demoapp",
+        "input_uri": f"gs://{bucket_name}/test_demoapp",
         "video_context": video_context})
 
     result = operation.result(timeout=120)
