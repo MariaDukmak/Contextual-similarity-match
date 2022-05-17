@@ -12,7 +12,9 @@ install_requires = [
     'itranslate',
     'torch',
     'keybert',
-    'streamlit'
+    'streamlit' 
+    'google-cloud-videointelligence',
+    'google-cloud-storage',
 ]
 
 setuptools.setup(

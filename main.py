@@ -2,7 +2,7 @@ import streamlit as st
 from pandas import DataFrame
 import seaborn as sns
 
-from src.helpers import _translate_text
+from src.helpers import _translate_text, extract_keywords_video
 from src.models import predict_from_model
 
 
@@ -70,6 +70,12 @@ def get_text():
                 height=200,
                 max_chars=10000)
 
+            video_link = st.text_area(
+                "Paste your video link",
+                height=50,
+                max_chars=10000,
+            )
+
             submit_button = st.form_submit_button(label="✨ Get me the results!")
 
     if stop_words_checkbox and translate_text:
@@ -80,7 +86,7 @@ def get_text():
     if not submit_button:
         st.stop()
 
-    return article, ad, stopwords, translate_text, model_type, use_mmr, diversity, n_results
+    return article, ad, stopwords, translate_text, model_type, use_mmr, diversity, n_results, video_link
 
 
 def show_results(result):
@@ -124,7 +130,9 @@ def main():
         layout="wide",)
 
     write_titel_expander()
-    article, ad, stopwords, translatetext, modeltype, mmr, diversity, n_results = get_text()
+    article, ad, stopwords, translatetext, modeltype, mmr, diversity, n_results,  video_link = get_text()
+    if video_link:
+        ad = extract_keywords_video(video_link)
     if translatetext:
         article, ad = _translate_text(article), _translate_text(ad)
     result = predict_from_model([article, ad], modeltype, mmr, diversity, n_results, stopwords)
