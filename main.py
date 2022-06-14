@@ -14,9 +14,19 @@ def write_titel_expander():
         st.title("🔑 Contextual similarity match")
         st.header("")
 
-    # with st.expander("ℹ️- About this website", expanded=True):
-    #     st.write(""" - The """
-    #     )
+    with st.expander("ℹ️- About this website", expanded=True):
+        st.write("""This is a prototype website for the internship assignment for GroupM Netherlands.
+                   \n *Created by Marya Dukmak* """
+        )
+
+    with st.expander("ℹ️- About the models", expanded=True):
+        st.write("""With this website you can test many models on your ad content and webpage content. Below is a brief summary:
+             \n ***Siamese LSTM*** : Predicting distance between ad & webpapage content based on CTR. 
+             \n ***Semantic Textual Similarity***: Calculate the distance (Cosine similarity) between two pieces of text after converting them into embedding
+             \n ***Sentiment Analysis***: Predicts the sentiment of a piece of text. This model has been trained for a previous school project. It’s a multilingual model
+             \n ***Keyword extracting***: Returns the most important keywords/phrases of a piece of text using BERT architecture
+         """
+                 )
 
 
 def get_text():
